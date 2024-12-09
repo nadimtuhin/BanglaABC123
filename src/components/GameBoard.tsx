@@ -7,6 +7,7 @@ import { GameItem } from "../types";
 import { ScoreStars } from "./ScoreStars";
 import { useStore } from "../useStore";
 import { CongratulationsMessage } from "./CongratulationsMessage";
+import Modal from "./Modal";
 
 interface GameBoardProps {
   showAnimalIcons: boolean;
@@ -89,48 +90,47 @@ export function GameBoard({
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col items-center space-y-4">
-        <div className="flex items-center space-x-4">
-          <p className="text-lg font-medium text-violet-800">
-            Selected Numbers: {parentNumbers.join(", ")}
-          </p>
-          <div className="flex items-center space-x-2">
-            <span className="text-lg font-medium text-violet-800">Score:</span>
-            <ScoreStars score={scoreInFiveStars} />
+    <>
+      <Modal isOpen={matches === numberOfCards} onClose={() => {}}>
+        <CongratulationsMessage
+          onNextDifficulty={handleNextDifficulty}
+          onRestartGame={() => resetGame(numberOfCards, parentNumbers)}
+        />
+      </Modal>
+      <div className="space-y-8">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="flex items-center space-x-4">
+            <p className="text-lg font-medium text-violet-800">
+              Selected Numbers: {parentNumbers.join(", ")}
+            </p>
+            <div className="flex items-center space-x-2">
+              <span className="text-lg font-medium text-violet-800">
+                Score:
+              </span>
+              <ScoreStars score={scoreInFiveStars} />
+            </div>
           </div>
         </div>
-        
-        <button
-          onClick={() => resetGame(numberOfCards, parentNumbers)}
-          className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-        >
-          Restart Game
-        </button>
-        
-        {matches === numberOfCards && (
-          <CongratulationsMessage onNextDifficulty={handleNextDifficulty} />
-        )}
-      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-        {cards.map((card, index) => (
-          <Card
-            key={index}
-            content={card.content}
-            isSelected={selectedCards.includes(index)}
-            isMatched={card.isMatched}
-            onClick={() => handleCardClick(index)}
-            pronunciation={card.pronunciation}
-            type={card.type}
-            showColors={showColors}
-            showAnimalIcons={showAnimalIcons}
-            color={card.colorTheme.primary}
-            animalIcon={card.animalIcon as React.ElementType}
-          />
-        ))}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          {cards.map((card, index) => (
+            <Card
+              key={index}
+              content={card.content}
+              isSelected={selectedCards.includes(index)}
+              isMatched={card.isMatched}
+              onClick={() => handleCardClick(index)}
+              pronunciation={card.pronunciation}
+              type={card.type}
+              showColors={showColors}
+              showAnimalIcons={showAnimalIcons}
+              color={card.colorTheme.primary}
+              animalIcon={card.animalIcon as React.ElementType}
+            />
+          ))}
+        </div>
+        <MatchFeedback show={showFeedback} isCorrect={isCorrectMatch} />
       </div>
-      <MatchFeedback show={showFeedback} isCorrect={isCorrectMatch} />
-    </div>
+    </>
   );
 }
