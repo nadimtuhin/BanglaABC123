@@ -33,6 +33,56 @@ interface NumberPair {
   englishPronunciation: string;
 }
 
+const useLocalStorage = <T,>(
+  key: string,
+  initialValue: T
+): [T, (value: T | ((val: T) => T)) => void] => {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(error);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return [storedValue, setValue];
+};
+
+  const generateGameItems = (
+    pair: NumberPair,
+    index: number,
+    type: "english" | "bengali",
+    numberOfCards: number,
+    showAnimalIcons: boolean
+  ) => {
+    const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
+    return {
+      id: type === "english" ? index : index + numberOfCards,
+      content: type === "english" ? pair.english : pair.bengali,
+      type,
+      isMatched: false,
+      pronunciation:
+        type === "english" ? pair.englishPronunciation : pair.pronunciation,
+      colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
+      animalIcon: showAnimalIcons
+        ? animalIcons[index % animalIcons.length]
+        : undefined,
+    };
+  };
+
 export function GameBoard() {
   const [cards, setCards] = useState<GameItem[]>([]);
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
@@ -40,34 +90,34 @@ export function GameBoard() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
-  const [showAnimalIcons, setShowAnimalIcons] = useState(() => {
-    const saved = localStorage.getItem("showAnimalIcons");
-    return saved !== null ? JSON.parse(saved) : true;
-  });
-  const [showColors, setShowColors] = useState(() => {
-    const saved = localStorage.getItem("showColors");
-    return saved !== null ? JSON.parse(saved) : true;
-  });
-  const [parentNumbers, setParentNumbers] = useState<number[]>(() => {
-    const saved = localStorage.getItem("parentNumbers");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    const [start, end] = "1-10".split("-").map(Number);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  });
-  const [selectedRange, setSelectedRange] = useState<string>(() => {
-    return localStorage.getItem("selectedRange") || "1-10";
-  });
-  const [numberOfCards, setNumberOfCards] = useState<number>(() => {
-    const saved = localStorage.getItem("numberOfCards");
-    return saved !== null ? JSON.parse(saved) : 5;
-  });
+  const [showAnimalIcons, setShowAnimalIcons] = useLocalStorage<boolean>(
+    "showAnimalIcons",
+    true
+  );
+  const [showColors, setShowColors] = useLocalStorage<boolean>(
+    "showColors",
+    true
+  );
+  const [parentNumbers, setParentNumbers] = useLocalStorage<number[]>(
+    "parentNumbers",
+    Array.from({ length: 10 }, (_, i) => i + 1)
+  );
+  const [selectedRange, setSelectedRange] = useLocalStorage<string>(
+    "selectedRange",
+    "1-10"
+  );
+  const [numberOfCards, setNumberOfCards] = useLocalStorage<number>(
+    "numberOfCards",
+    5
+  );
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRange(e.target.value);
     const [start, end] = e.target.value.split("-").map(Number);
-    const numbers = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    const numbers = Array.from(
+      { length: end - start + 1 },
+      (_, i) => start + i
+    );
     setParentNumbers(numbers);
     // Reset game state when range changes
     setCards([]);
@@ -78,57 +128,28 @@ export function GameBoard() {
     setIsCorrectMatch(false);
   };
 
-  useEffect(() => {
-    localStorage.setItem("showAnimalIcons", JSON.stringify(showAnimalIcons));
-  }, [showAnimalIcons]);
+
+
+  const getFilteredNumberPairs = (parentNumbers: number[], numberOfCards: number) => {
+    return numberPairs
+      .filter((pair) => parentNumbers.includes(Number(pair.english)))
+      .slice(0, numberOfCards);
+  };
+
+  const createGameItems = (
+    parentNumbers: number[],
+    numberOfCards: number,
+    showAnimalIcons: boolean
+  ) => {
+    const filteredNumberPairs = getFilteredNumberPairs(parentNumbers, numberOfCards);
+    return filteredNumberPairs.flatMap((pair, index) => [
+      generateGameItems(pair, index, "english", numberOfCards, showAnimalIcons),
+      generateGameItems(pair, index, "bengali", numberOfCards, showAnimalIcons),
+    ]);
+  };
 
   useEffect(() => {
-    localStorage.setItem("showColors", JSON.stringify(showColors));
-  }, [showColors]);
-
-  useEffect(() => {
-    localStorage.setItem("parentNumbers", JSON.stringify(parentNumbers));
-  }, [parentNumbers]);
-
-  useEffect(() => {
-    localStorage.setItem("selectedRange", selectedRange);
-  }, [selectedRange]);
-
-  useEffect(() => {
-    localStorage.setItem("numberOfCards", JSON.stringify(numberOfCards));
-  }, [numberOfCards]);
-
-  useEffect(() => {
-    const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
-
-    const filteredNumberPairs = (numberPairs as NumberPair[]).filter((pair) =>
-      parentNumbers.includes(Number(pair.english))
-    ).slice(0, numberOfCards);
-
-    const gameItems: GameItem[] = [
-      ...filteredNumberPairs.map((pair, index) => ({
-        id: index,
-        content: pair.english,
-        type: "english" as const,
-        isMatched: false,
-        pronunciation: pair.englishPronunciation,
-        colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
-        animalIcon: showAnimalIcons
-          ? animalIcons[index % animalIcons.length]
-          : undefined,
-      })),
-      ...filteredNumberPairs.map((pair, index) => ({
-        id: index + filteredNumberPairs.length,
-        content: pair.bengali,
-        type: "bengali" as const,
-        isMatched: false,
-        pronunciation: pair.pronunciation,
-        colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
-        animalIcon: showAnimalIcons
-          ? animalIcons[index % animalIcons.length]
-          : undefined,
-      })),
-    ];
+    const gameItems = createGameItems(parentNumbers, numberOfCards, showAnimalIcons);
     setCards(shuffle(gameItems));
   }, [parentNumbers, showAnimalIcons, numberOfCards]);
 
