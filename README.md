@@ -25,21 +25,23 @@ The BanglaABC123 is a fun and interactive educational game designed to help user
 To get started with the BanglaABC123, follow these steps:
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/yourusername/number-match-game.git
+   git clone https://github.com/nadimtuhin/banglaabc123.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd number-match-game
+   cd banglaabc123
    ```
-
 3. Install the dependencies:
+
    ```bash
-   npm install
+   yarn
    ```
 
 4. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -71,4 +73,4 @@ For any inquiries, please reach out to [nadimtuhin@gmail.com](mailto:nadimtuhin@
 
 ## Screenshot
 
-![Description of the screenshot](./screenshots/screenshot.png)
+![Description of the screenshot](./public/screenshot.png)
