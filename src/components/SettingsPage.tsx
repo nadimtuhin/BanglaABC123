@@ -35,68 +35,66 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
   });
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg z-60">
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-4">Settings</h2>
-          <div className="mb-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={showAnimalIcons}
-                onChange={(e) => setShowAnimalIcons(e.target.checked)}
-                className="mr-2"
-              />
-              Show Animal Icons
-            </label>
-          </div>
-          <div className="mb-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={showColors}
-                onChange={(e) => setShowColors(e.target.checked)}
-                className="mr-2"
-              />
-              Show Colors
-            </label>
-          </div>
-          <div className="mb-4">
-            <label className="flex items-center">
-              <span className="mr-2">Number of Cards:</span>
-              <select
-                value={numberOfCards}
-                onChange={(e) => setNumberOfCards(Number(e.target.value))}
-                className="border rounded p-1"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <option key={num} value={num}>
-                    {num}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="mb-4">
-            <label className="flex items-center">
-              <span className="mr-2">Select Range:</span>
-              <select
-                onChange={handleRangeChange}
-                value={selectedRange}
-                className="border rounded p-1"
-              >
-                {ranges.map((range, i) => (
-                  <option key={i} value={range.value}>
-                    {range.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
+      <div className="bg-white p-8 rounded-lg shadow-lg z-60 max-w-md w-full">
+        <h2 className="text-3xl font-bold mb-6 text-center text-violet-800">Settings</h2>
+        <div className="mb-6">
+          <label className="flex items-center mb-2">
+            <input
+              type="checkbox"
+              checked={showAnimalIcons}
+              onChange={(e) => setShowAnimalIcons(e.target.checked)}
+              className="mr-2 h-5 w-5"
+            />
+            <span className="text-lg">Show Animal Icons</span>
+          </label>
+        </div>
+        <div className="mb-6">
+          <label className="flex items-center mb-2">
+            <input
+              type="checkbox"
+              checked={showColors}
+              onChange={(e) => setShowColors(e.target.checked)}
+              className="mr-2 h-5 w-5"
+            />
+            <span className="text-lg">Show Colors</span>
+          </label>
+        </div>
+        <div className="mb-6">
+          <label className="flex items-center mb-2">
+            <span className="mr-2 text-lg">Number of Cards:</span>
+            <select
+              value={numberOfCards}
+              onChange={(e) => setNumberOfCards(Number(e.target.value))}
+              className="border rounded p-2 text-lg"
+            >
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="mb-6">
+          <label className="flex items-center mb-2">
+            <span className="mr-2 text-lg">Select Range:</span>
+            <select
+              onChange={handleRangeChange}
+              value={selectedRange}
+              className="border rounded p-2 text-lg"
+            >
+              {ranges.map((range, i) => (
+                <option key={i} value={range.value}>
+                  {range.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         <button
           onClick={onClose}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+          className="mt-4 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
         >
           Close
         </button>
