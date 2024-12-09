@@ -1,25 +1,22 @@
 import React from "react";
-import { useLocalStorage } from "./useLocalStorage";
+import { useStore } from "../useStore";
 
 interface SettingsPageProps {
   onClose: () => void;
 }
 
 export function SettingsPage({ onClose }: SettingsPageProps) {
-  const [showAnimalIcons, setShowAnimalIcons] = useLocalStorage(
-    "showAnimalIcons",
-    true
-  );
-  const [showColors, setShowColors] = useLocalStorage("showColors", true);
-  const [parentNumbers, setParentNumbers] = useLocalStorage(
-    "parentNumbers",
-    Array.from({ length: 10 }, (_, i) => i + 1)
-  );
-  const [selectedRange, setSelectedRange] = useLocalStorage(
-    "selectedRange",
-    "1-10"
-  );
-  const [numberOfCards, setNumberOfCards] = useLocalStorage("numberOfCards", 5);
+  const {
+    showAnimalIcons,
+    setShowAnimalIcons,
+    showColors,
+    setShowColors,
+    setParentNumbers,
+    selectedRange,
+    setSelectedRange,
+    numberOfCards,
+    setNumberOfCards,
+  } = useStore();
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [start, end] = e.target.value.split("-").map(Number);

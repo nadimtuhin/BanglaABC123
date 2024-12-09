@@ -5,17 +5,20 @@ import { shuffle } from "../utils/shuffle";
 import { createGameItems } from "../utils/gameUtils";
 import { GameItem } from "../types";
 import { ScoreStars } from "./ScoreStars";
-import { useLocalStorage } from "./useLocalStorage";
 
-export function GameBoard() {
-  const [showAnimalIcons] = useLocalStorage("showAnimalIcons", true);
-  const [showColors] = useLocalStorage("showColors", true);
-  const [parentNumbers] = useLocalStorage(
-    "parentNumbers",
-    Array.from({ length: 10 }, (_, i) => i + 1)
-  );
-  const [numberOfCards] = useLocalStorage("numberOfCards", 5);
+interface GameBoardProps {
+  showAnimalIcons: boolean;
+  showColors: boolean;
+  parentNumbers: number[];
+  numberOfCards: number;
+}
 
+export function GameBoard({
+  showAnimalIcons,
+  showColors,
+  parentNumbers,
+  numberOfCards,
+}: GameBoardProps) {
   const [cards, setCards] = useState<GameItem[]>([]);
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [matches, setMatches] = useState(0);
@@ -77,27 +80,33 @@ export function GameBoard() {
   const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 rounded-lg shadow-lg">
-      <div className="text-center mb-8">
-        <p className="text-lg font-semibold">
-          Selected Numbers: {parentNumbers.join(", ")}
-        </p>
-        <p className="text-gray-600 text-lg mb-4">
-          Score: <ScoreStars score={scoreInFiveStars} />
-        </p>
+    <div className="space-y-8">
+      <div className="flex flex-col items-center space-y-4">
+        <div className="flex items-center space-x-4">
+          <p className="text-lg font-medium text-violet-800">
+            Selected Numbers: {parentNumbers.join(", ")}
+          </p>
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-medium text-violet-800">Score:</span>
+            <ScoreStars score={scoreInFiveStars} />
+          </div>
+        </div>
+        
         <button
           onClick={() => resetGame(numberOfCards, parentNumbers)}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg"
+          className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
         >
           Restart Game
         </button>
+        
         {matches === parentNumbers.length && (
-          <div className="mt-6 text-2xl font-bold text-green-500">
+          <div className="mt-6 text-2xl font-bold text-emerald-500 animate-bounce">
             🎉 Congratulations! You've matched all numbers! 🎉
           </div>
         )}
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-6 p-6 bg-white rounded-2xl shadow-xl">
+
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
         {cards.map((card, index) => (
           <Card
             key={index}
