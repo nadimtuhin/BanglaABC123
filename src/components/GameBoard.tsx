@@ -5,6 +5,8 @@ import { shuffle } from "../utils/shuffle";
 import { createGameItems } from "../utils/gameUtils";
 import { GameItem } from "../types";
 import { ScoreStars } from "./ScoreStars";
+import { useStore } from "../useStore";
+import { CongratulationsMessage } from "./CongratulationsMessage";
 
 interface GameBoardProps {
   showAnimalIcons: boolean;
@@ -25,6 +27,7 @@ export function GameBoard({
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
+  const setNumberOfCards = useStore((state) => state.setNumberOfCards);
 
   function resetGame(numberOfCards: number, parentNumbers: number[]) {
     setCards(shuffle(createGameItems(parentNumbers, numberOfCards)));
@@ -79,6 +82,12 @@ export function GameBoard({
 
   const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
 
+  const handleNextDifficulty = () => {
+    const newNumberOfCards = numberOfCards + 1;
+    setNumberOfCards(newNumberOfCards);
+    resetGame(newNumberOfCards, parentNumbers);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col items-center space-y-4">
@@ -99,10 +108,8 @@ export function GameBoard({
           Restart Game
         </button>
         
-        {matches === parentNumbers.length && (
-          <div className="mt-6 text-2xl font-bold text-emerald-500 animate-bounce">
-            🎉 Congratulations! You've matched all numbers! 🎉
-          </div>
+        {matches === numberOfCards && (
+          <CongratulationsMessage onNextDifficulty={handleNextDifficulty} />
         )}
       </div>
 
