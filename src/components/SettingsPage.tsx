@@ -35,9 +35,9 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg z-60 w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-violet-800">Settings</h2>
-        <div className="mb-6">
+      <div className="bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg z-60 w-full max-w-md">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center text-violet-800">Settings</h2>
+        <div className="mb-4">
           <label className="flex items-center mb-2">
             <input
               type="checkbox"
@@ -45,10 +45,10 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
               onChange={(e) => setShowAnimalIcons(e.target.checked)}
               className="mr-2 h-5 w-5"
             />
-            <span className="text-lg">Show Animal Icons</span>
+            <span className="text-base md:text-lg">Show Animal Icons</span>
           </label>
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="flex items-center mb-2">
             <input
               type="checkbox"
@@ -56,34 +56,32 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
               onChange={(e) => setShowColors(e.target.checked)}
               className="mr-2 h-5 w-5"
             />
-            <span className="text-lg">Show Colors</span>
+            <span className="text-base md:text-lg">Show Colors</span>
           </label>
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="flex items-center mb-2">
-            <span className="mr-2 text-lg">Number of Cards:</span>
-            <div className="flex flex-wrap space-x-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                <button
-                  key={num}
-                  onClick={() => setNumberOfCards(num)}
-                  className={`border rounded p-2 text-lg transition-colors duration-200 ${numberOfCards === num ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-100'}`}
-                >
-                  {num}
-                </button>
-              ))}
-            </div>
+            <span className="mr-2 text-base md:text-lg">Number of Cards:</span>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={numberOfCards}
+              onChange={(e) => setNumberOfCards(Number(e.target.value))}
+              className="w-full"
+            />
+            <span className="ml-2 text-base md:text-lg">{numberOfCards}</span>
           </label>
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="flex items-center mb-2">
-            <span className="mr-2 text-lg">Select Range:</span>
+            <span className="mr-2 text-base md:text-lg">Select Range:</span>
             <div className="flex flex-wrap space-x-2">
               {ranges.map((range) => (
                 <button
                   key={range.label}
                   onClick={() => handleRangeChange(range.start, range.end)}
-                  className={`border rounded p-2 text-lg transition-colors duration-200 ${selectedRange === `${range.start}-${range.end}` ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-100'}`}
+                  className={`border rounded-lg p-2 text-base md:text-lg transition-colors duration-200 shadow-md transform hover:scale-105 ${selectedRange === `${range.start}-${range.end}` ? 'bg-blue-600 text-white' : 'bg-white hover:bg-blue-200'} m-1`}
                 >
                   {range.label}
                 </button>
@@ -93,7 +91,7 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
         </div>
         <button
           onClick={onClose}
-          className="mt-4 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+          className="mt-4 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 transform hover:scale-105"
         >
           Close
         </button>
