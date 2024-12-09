@@ -153,6 +153,7 @@
              onClick={() => handleCardClick(index)}
              pronunciation={card.pronunciation}
              type={card.type}
+             color={card.color}
              animalIcon={showAnimalIcons ? card.animalIcon : undefined}
            />
          ))}
