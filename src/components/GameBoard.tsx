@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "./Card";
 import { MatchFeedback } from "./MatchFeedback";
 import { shuffle } from "../utils/shuffle";
@@ -54,43 +54,16 @@ export function GameBoard() {
     );
   };
 
-  useEffect(() => {
+  const initializeCards = () => {
     const gameItems = createGameItems(
       parentNumbers,
       numberOfCards,
       showAnimalIcons
     );
-    setCards(shuffle(gameItems));
-  }, [parentNumbers, showAnimalIcons, numberOfCards]);
-
-  useEffect(() => {
-    if (selectedCards.length === 2) {
-      const [first, second] = selectedCards;
-      const firstCard = cards[first];
-      const secondCard = cards[second];
-
-      const isMatch = firstCard?.value === secondCard?.value;
-
-      setIsCorrectMatch(isMatch);
-      setShowFeedback(true);
-
-      if (isMatch) {
-        const updatedCards = cards.map((card, idx) =>
-          idx === first || idx === second ? { ...card, isMatched: true } : card
-        );
-        setCards(updatedCards);
-        setMatches((m) => m + 1);
-        setScore((prevScore) => prevScore + 1);
-      }
-
-      const timer = setTimeout(() => {
-        setShowFeedback(false);
-        setSelectedCards([]);
-      }, 1000);
-
-      return () => clearTimeout(timer);
+    if (cards.length === 0 || gameItems.length !== cards.length) {
+      setCards(shuffle(gameItems));
     }
-  }, [selectedCards, cards]);
+  };
 
   const handleCardClick = (index: number) => {
     if (
@@ -98,9 +71,40 @@ export function GameBoard() {
       !selectedCards.includes(index) &&
       !cards[index].isMatched
     ) {
-      setSelectedCards((prev) => [...prev, index]);
+      const newSelectedCards = [...selectedCards, index];
+      setSelectedCards(newSelectedCards);
+
+      if (newSelectedCards.length === 2) {
+        const [first, second] = newSelectedCards;
+        const firstCard = cards[first];
+        const secondCard = cards[second];
+
+        const isMatch = firstCard?.value === secondCard?.value;
+
+        setIsCorrectMatch(isMatch);
+        setShowFeedback(true);
+
+        if (isMatch) {
+          const updatedCards = cards.map((card, idx) =>
+            idx === first || idx === second ? { ...card, isMatched: true } : card
+          );
+          setCards(updatedCards);
+          setMatches((m) => m + 1);
+          setScore((prevScore) => prevScore + 1);
+        }
+
+        setTimeout(() => {
+          setShowFeedback(false);
+          setSelectedCards([]);
+        }, 1000);
+      }
     }
   };
+
+  // Initialize cards on first render
+  if (cards.length === 0) {
+    initializeCards();
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -118,8 +122,7 @@ export function GameBoard() {
       <div className="text-center mb-8">
         <p>Selected Numbers: {parentNumbers.join(", ")}</p>
         <p className="text-gray-600 text-lg mb-4">
-          Score:{" "}
-          <ScoreStars score={score} />
+          Score: <ScoreStars score={score} />
         </p>
         {matches === parentNumbers.length && (
           <div className="mt-6 text-2xl font-bold">
