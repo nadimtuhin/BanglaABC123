@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface SettingsPageProps {
   showAnimalIcons: boolean;
@@ -8,7 +8,15 @@ interface SettingsPageProps {
   selectedRange: string;
   setSelectedRange: (value: string) => void;
   handleRangeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  numberOfCards: number;
+  setNumberOfCards: (value: number) => void;
 }
+
+const ranges = Array.from({ length: 10 }, (_, i) => {
+  const start = i * 10 + 1;
+  const end = start + 9;
+  return { value: `${start}-${end}`, label: `${start}-${end}` };
+});
 
 export function SettingsPage({
   showAnimalIcons,
@@ -17,6 +25,8 @@ export function SettingsPage({
   setShowColors,
   selectedRange,
   handleRangeChange,
+  numberOfCards,
+  setNumberOfCards,
 }: SettingsPageProps) {
   return (
     <div className="p-4">
@@ -44,23 +54,37 @@ export function SettingsPage({
         </label>
       </div>
       <div className="mb-4">
-        <select
-          onChange={handleRangeChange}
-          value={selectedRange}
-          className="border p-2 rounded mb-4"
-        >
-          <option value="1-10">1-10</option>
-          <option value="11-20">11-20</option>
-          <option value="21-30">21-30</option>
-          <option value="31-40">31-40</option>
-          <option value="41-50">41-50</option>
-          <option value="51-60">51-60</option>
-          <option value="61-70">61-70</option>
-          <option value="71-80">71-80</option>
-          <option value="81-90">81-90</option>
-          <option value="91-100">91-100</option>
-        </select>
+        <label className="flex items-center">
+          <span className="mr-2">Number of Cards:</span>
+          <select
+            value={numberOfCards}
+            onChange={(e) => setNumberOfCards(Number(e.target.value))}
+            className="border rounded p-1"
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="mb-4">
+        <label className="flex items-center">
+          <span className="mr-2">Select Range:</span>
+          <select
+            onChange={handleRangeChange}
+            value={selectedRange}
+            className="border rounded p-1"
+          >
+            {ranges.map((range, i) => (
+              <option key={i} value={range.value}>
+                {range.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
     </div>
   );
-} 
+}

@@ -11,8 +11,8 @@ const COLOR_THEMES = [
   { primary: "indigo", secondary: "pink", accent: "purple" },
   { primary: "teal", secondary: "orange", accent: "green" },
   { primary: "blue", secondary: "yellow", accent: "indigo" },
-  { primary: "blue", secondary: "rose", accent: "purple" }, // Changed from emerald
-  { primary: "indigo", secondary: "amber", accent: "green" }, // Changed from violet
+  { primary: "blue", secondary: "rose", accent: "purple" },
+  { primary: "indigo", secondary: "amber", accent: "green" },
 ];
 
 interface GameItem {
@@ -47,14 +47,12 @@ export function GameBoard() {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
   const [selectedRange, setSelectedRange] = useState<string>("1-10");
+  const [numberOfCards, setNumberOfCards] = useState<number>(5);
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRange(e.target.value);
     const [start, end] = e.target.value.split("-").map(Number);
-    const numbers = Array.from(
-      { length: end - start + 1 },
-      (_, i) => start + i
-    );
+    const numbers = Array.from({ length: end - start + 1 }, (_, i) => start + i);
     setParentNumbers(numbers);
     // Reset game state when range changes
     setCards([]);
@@ -70,7 +68,7 @@ export function GameBoard() {
 
     const filteredNumberPairs = (numberPairs as NumberPair[]).filter((pair) =>
       parentNumbers.includes(Number(pair.english))
-    );
+    ).slice(0, numberOfCards);
 
     const gameItems: GameItem[] = [
       ...filteredNumberPairs.map((pair, index) => ({
@@ -97,7 +95,7 @@ export function GameBoard() {
       })),
     ];
     setCards(shuffle(gameItems));
-  }, [parentNumbers, showAnimalIcons]);
+  }, [parentNumbers, showAnimalIcons, numberOfCards]);
 
   useEffect(() => {
     if (selectedCards.length === 2) {
@@ -150,7 +148,10 @@ export function GameBoard() {
         showColors={showColors}
         setShowColors={setShowColors}
         selectedRange={selectedRange}
+        setSelectedRange={setSelectedRange}
         handleRangeChange={handleRangeChange}
+        numberOfCards={numberOfCards}
+        setNumberOfCards={setNumberOfCards}
       />
       <div className="text-center mb-8">
         <p>Selected Numbers: {parentNumbers.join(", ")}</p>
