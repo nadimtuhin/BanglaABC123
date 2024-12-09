@@ -64,30 +64,20 @@ export function GameBoard() {
 
   useEffect(() => {
     if (selectedCards.length === 2) {
-      console.log("selectedCards", selectedCards);
       const [first, second] = selectedCards;
       const firstCard = cards[first];
       const secondCard = cards[second];
-      console.log("firstCard", firstCard);
-      console.log("secondCard", secondCard);
 
-      const isMatch = firstCard.value === secondCard.value;
-
-      console.log("isMatch", isMatch);
+      const isMatch = firstCard?.content === secondCard?.content;
 
       setIsCorrectMatch(isMatch);
       setShowFeedback(true);
 
-      console.log("cards", cards);
-
       if (isMatch) {
-        setCards((prevCards) =>
-          prevCards.map((card) =>
-            card.id === firstCard.id || card.id === secondCard.id
-              ? { ...card, isMatched: true }
-              : card
-          )
+        const updatedCards = cards.map((card, idx) =>
+          idx === first || idx === second ? { ...card, isMatched: true } : card
         );
+        setCards(updatedCards);
         setMatches((m) => m + 1);
         setScore((prevScore) => prevScore + 1);
       }
