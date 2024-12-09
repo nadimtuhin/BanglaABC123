@@ -29,6 +29,7 @@ export function GameBoard({
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
   const setNumberOfCards = useStore((state) => state.setNumberOfCards);
+  const setParentNumbers = useStore((state) => state.setParentNumbers);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function resetGame(numberOfCards: number, parentNumbers: number[]) {
@@ -91,13 +92,26 @@ export function GameBoard({
 
   const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
 
+  function range(start: number, end: number) {
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }
+
   const handleNextDifficulty = () => {
     let newNumberOfCards = numberOfCards + 1;
-    if (newNumberOfCards > 15) {
-      newNumberOfCards = 15;
+    if (newNumberOfCards > 10) {
+      newNumberOfCards = 3;
+
+      // check range of previous parent numbers
+      const newParentNumbersStart = parentNumbers[parentNumbers.length - 1] + 1;
+      const newParentNumbersEnd = newParentNumbersStart + 9;
+      const newParentNumbers = range(
+        newParentNumbersStart,
+        newParentNumbersEnd
+      );
+      setParentNumbers(newParentNumbers);
     }
+
     setNumberOfCards(newNumberOfCards);
-    resetGame(newNumberOfCards, parentNumbers);
   };
 
   return (
@@ -108,6 +122,7 @@ export function GameBoard({
           onRestartGame={() => resetGame(numberOfCards, parentNumbers)}
         />
       </Modal>
+
       <div className="space-y-8 overflow-x-auto">
         <div className="flex flex-col items-center space-y-4">
           <div className="flex items-center space-x-4">
