@@ -101,14 +101,14 @@ export function GameBoard({
   };
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col justify-center items-center">
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CongratulationsMessage
           onNextDifficulty={handleNextDifficulty}
           onRestartGame={() => resetGame(numberOfCards, parentNumbers)}
         />
       </Modal>
-      <div className="space-y-8">
+      <div className="space-y-8 overflow-x-auto">
         <div className="flex flex-col items-center space-y-4">
           <div className="flex items-center space-x-4">
             <p className="text-lg font-medium text-violet-800">
@@ -123,7 +123,7 @@ export function GameBoard({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-full">
           {cards.map((card, index) => (
             <Card
               key={index}
@@ -142,6 +142,6 @@ export function GameBoard({
         </div>
         <MatchFeedback show={showFeedback} isCorrect={isCorrectMatch} />
       </div>
-    </>
+    </div>
   );
 }
