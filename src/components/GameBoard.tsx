@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card } from "./Card";
 import { MatchFeedback } from "./MatchFeedback";
 import { shuffle } from "../utils/shuffle";
-import { createGameItems, resetGameState } from "../utils/gameUtils";
+import { createGameItems } from "../utils/gameUtils";
 import { GameItem } from "../types";
 import { ScoreStars } from "./ScoreStars";
 
@@ -124,8 +124,10 @@ export function GameBoard({
             onClick={() => handleCardClick(index)}
             pronunciation={card.pronunciation}
             type={card.type}
-            color={showColors ? card.colorTheme.primary : "default"}
-            animalIcon={showAnimalIcons ? card.animalIcon : undefined}
+            showColors={showColors}
+            showAnimalIcons={showAnimalIcons}
+            color={card.colorTheme.primary}
+            animalIcon={card.animalIcon}
           />
         ))}
       </div>

@@ -1,24 +1,9 @@
+import { Bird, Bug, Cat, Dog, Fish, Mouse, Rabbit, Rat, Shell, Snail, Squirrel, Turtle } from "lucide-react";
 import { NumberPair } from "../data/numbers";
-
-import {
-  Bird,
-  Bug,
-  Dog,
-  Fish,
-  Mouse,
-  Rabbit,
-  Rat,
-  Shell,
-  Snail,
-  Squirrel,
-  Turtle,
-} from "lucide-react";
-
-import { Cat } from "lucide-react";
 import { numberPairs } from "../data/numbers";
 import { GameItem } from "../types";
 
-const COLOR_THEMES = [
+export const COLOR_THEMES = [
   { primary: "indigo", secondary: "pink", accent: "purple" },
   { primary: "teal", secondary: "orange", accent: "green" },
   { primary: "blue", secondary: "yellow", accent: "indigo" },
@@ -26,7 +11,7 @@ const COLOR_THEMES = [
   { primary: "indigo", secondary: "amber", accent: "green" },
 ];
 
-const ANIMAL_ICONS = [
+export const ANIMAL_ICONS = [
   Dog,
   Cat,
   Fish,
@@ -34,7 +19,6 @@ const ANIMAL_ICONS = [
   Rat,
   Rabbit,
   Snail,
-  Rabbit,
   Shell,
   Squirrel,
   Bug,
@@ -46,8 +30,7 @@ export const generateGameItems = (
   pair: NumberPair,
   index: number,
   type: "english" | "bengali",
-  numberOfCards: number,
-  showAnimalIcons: boolean
+  numberOfCards: number
 ): GameItem => {
   return {
     id: type === "english" ? index : index + numberOfCards,
@@ -58,9 +41,7 @@ export const generateGameItems = (
     pronunciation:
       type === "english" ? pair.englishPronunciation : pair.pronunciation,
     colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
-    animalIcon: showAnimalIcons
-      ? ANIMAL_ICONS[index % ANIMAL_ICONS.length]
-      : undefined,
+    animalIcon: ANIMAL_ICONS[index % ANIMAL_ICONS.length],
   };
 };
 
@@ -75,15 +56,14 @@ export const getFilteredNumberPairs = (
 
 export const createGameItems = (
   parentNumbers: number[],
-  numberOfCards: number,
-  showAnimalIcons: boolean
+  numberOfCards: number
 ) => {
   const filteredNumberPairs = getFilteredNumberPairs(
     parentNumbers,
     numberOfCards
   );
   return filteredNumberPairs.flatMap((pair, index) => [
-    generateGameItems(pair, index, "english", numberOfCards, showAnimalIcons),
-    generateGameItems(pair, index, "bengali", numberOfCards, showAnimalIcons),
+    generateGameItems(pair, index, "english", numberOfCards),
+    generateGameItems(pair, index, "bengali", numberOfCards),
   ]);
 };
