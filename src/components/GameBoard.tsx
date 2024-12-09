@@ -40,14 +40,29 @@ export function GameBoard() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
-  const [showAnimalIcons, setShowAnimalIcons] = useState(true);
-  const [showColors, setShowColors] = useState(true);
+  const [showAnimalIcons, setShowAnimalIcons] = useState(() => {
+    const saved = localStorage.getItem("showAnimalIcons");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [showColors, setShowColors] = useState(() => {
+    const saved = localStorage.getItem("showColors");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const [parentNumbers, setParentNumbers] = useState<number[]>(() => {
+    const saved = localStorage.getItem("parentNumbers");
+    if (saved) {
+      return JSON.parse(saved);
+    }
     const [start, end] = "1-10".split("-").map(Number);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
-  const [selectedRange, setSelectedRange] = useState<string>("1-10");
-  const [numberOfCards, setNumberOfCards] = useState<number>(5);
+  const [selectedRange, setSelectedRange] = useState<string>(() => {
+    return localStorage.getItem("selectedRange") || "1-10";
+  });
+  const [numberOfCards, setNumberOfCards] = useState<number>(() => {
+    const saved = localStorage.getItem("numberOfCards");
+    return saved !== null ? JSON.parse(saved) : 5;
+  });
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRange(e.target.value);
@@ -62,6 +77,26 @@ export function GameBoard() {
     setShowFeedback(false);
     setIsCorrectMatch(false);
   };
+
+  useEffect(() => {
+    localStorage.setItem("showAnimalIcons", JSON.stringify(showAnimalIcons));
+  }, [showAnimalIcons]);
+
+  useEffect(() => {
+    localStorage.setItem("showColors", JSON.stringify(showColors));
+  }, [showColors]);
+
+  useEffect(() => {
+    localStorage.setItem("parentNumbers", JSON.stringify(parentNumbers));
+  }, [parentNumbers]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedRange", selectedRange);
+  }, [selectedRange]);
+
+  useEffect(() => {
+    localStorage.setItem("numberOfCards", JSON.stringify(numberOfCards));
+  }, [numberOfCards]);
 
   useEffect(() => {
     const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
