@@ -16,7 +16,7 @@ export const CongratulationsMessage: React.FC<CongratulationsMessageProps> = ({ 
         onClick={onNextDifficulty}
         className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
       >
-        Next Difficulty
+        Next Level
       </button>
       <button
         onClick={onRestartGame}

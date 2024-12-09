@@ -29,17 +29,25 @@ export function GameBoard({
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
   const setNumberOfCards = useStore((state) => state.setNumberOfCards);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   function resetGame(numberOfCards: number, parentNumbers: number[]) {
     setCards(shuffle(createGameItems(parentNumbers, numberOfCards)));
     setMatches(0);
     setScore(0);
     setSelectedCards([]);
+    setIsModalOpen(false);
   }
 
   useEffect(() => {
     resetGame(numberOfCards, parentNumbers);
   }, [numberOfCards, parentNumbers, showAnimalIcons]);
+
+  useEffect(() => {
+    if (matches === numberOfCards) {
+      setIsModalOpen(true);
+    }
+  }, [matches, numberOfCards]);
 
   const handleCardClick = (index: number) => {
     if (
@@ -84,14 +92,17 @@ export function GameBoard({
   const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
 
   const handleNextDifficulty = () => {
-    const newNumberOfCards = numberOfCards + 1;
+    let newNumberOfCards = numberOfCards + 1;
+    if (newNumberOfCards > 15) {
+      newNumberOfCards = 15;
+    }
     setNumberOfCards(newNumberOfCards);
     resetGame(newNumberOfCards, parentNumbers);
   };
 
   return (
     <>
-      <Modal isOpen={matches === numberOfCards} onClose={() => {}}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CongratulationsMessage
           onNextDifficulty={handleNextDifficulty}
           onRestartGame={() => resetGame(numberOfCards, parentNumbers)}
