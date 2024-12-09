@@ -2,40 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Card } from "./Card";
 import { MatchFeedback } from "./MatchFeedback";
 import { shuffle } from "../utils/shuffle";
-import {
-  createGameItems,
-  resetGameState,
-} from "../utils/gameUtils";
+import { createGameItems, resetGameState } from "../utils/gameUtils";
 import { SettingsPage } from "./SettingsPage";
 import { GameItem } from "../types";
-
-const useLocalStorage = <T,>(
-  key: string,
-  initialValue: T
-): [T, (value: T | ((val: T) => T)) => void] => {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
-      return initialValue;
-    }
-  });
-
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return [storedValue, setValue];
-};
+import { useLocalStorage } from "./useLocalStorage";
 
 export function GameBoard() {
   const [cards, setCards] = useState<GameItem[]>([]);
