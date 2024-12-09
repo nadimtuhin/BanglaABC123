@@ -6,6 +6,7 @@ import { createGameItems, resetGameState } from "../utils/gameUtils";
 import { SettingsPage } from "./SettingsPage";
 import { GameItem } from "../types";
 import { useLocalStorage } from "./useLocalStorage";
+import { ScoreStars } from "./ScoreStars";
 
 export function GameBoard() {
   const [cards, setCards] = useState<GameItem[]>([]);
@@ -68,7 +69,7 @@ export function GameBoard() {
       const firstCard = cards[first];
       const secondCard = cards[second];
 
-      const isMatch = firstCard?.content === secondCard?.content;
+      const isMatch = firstCard?.value === secondCard?.value;
 
       setIsCorrectMatch(isMatch);
       setShowFeedback(true);
@@ -118,11 +119,7 @@ export function GameBoard() {
         <p>Selected Numbers: {parentNumbers.join(", ")}</p>
         <p className="text-gray-600 text-lg mb-4">
           Score:{" "}
-          {Array.from({ length: score }, (_, i) => (
-            <span key={i} className="text-yellow-500">
-              ⭐
-            </span>
-          ))}
+          <ScoreStars score={score} />
         </p>
         {matches === parentNumbers.length && (
           <div className="mt-6 text-2xl font-bold">
