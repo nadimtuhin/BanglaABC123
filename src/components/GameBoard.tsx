@@ -1,36 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "./Card";
 import { MatchFeedback } from "./MatchFeedback";
-import { numberPairs } from "../data/numbers";
 import { shuffle } from "../utils/shuffle";
-import { Dog, Cat, Rabbit, Snail, Rat, Fish, Bird } from "lucide-react";
+import {
+  createGameItems,
+  resetGameState,
+} from "../utils/gameUtils";
 import { SettingsPage } from "./SettingsPage";
-
-const COLOR_THEMES = [
-  { primary: "indigo", secondary: "pink", accent: "purple" },
-  { primary: "teal", secondary: "orange", accent: "green" },
-  { primary: "blue", secondary: "yellow", accent: "indigo" },
-  { primary: "blue", secondary: "rose", accent: "purple" },
-  { primary: "indigo", secondary: "amber", accent: "green" },
-];
-
-interface GameItem {
-  id: number;
-  content: string;
-  type: "english" | "bengali";
-  isMatched: boolean;
-  pronunciation?: string;
-  animalIcon?: React.ElementType;
-  colorTheme: { primary: string; secondary: string; accent: string };
-}
-
-interface NumberPair {
-  number: number;
-  english: string;
-  bengali: string;
-  pronunciation: string;
-  englishPronunciation: string;
-}
+import { GameItem } from "../types";
 
 const useLocalStorage = <T,>(
   key: string,
@@ -96,60 +73,22 @@ export function GameBoard() {
     );
     setParentNumbers(numbers);
     setSelectedRange(e.target.value);
-    resetGameState();
-  };
-
-  const resetGameState = () => {
-    setCards([]);
-    setSelectedCards([]);
-    setMatches(0);
-    setScore(0);
-    setShowFeedback(false);
-    setIsCorrectMatch(false);
-  };
-
-  const generateGameItems = (
-    pair: NumberPair,
-    index: number,
-    type: "english" | "bengali"
-  ) => {
-    const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
-    return {
-      id: type === "english" ? index : index + numberOfCards,
-      content: type === "english" ? pair.english : pair.bengali,
-      type,
-      isMatched: false,
-      pronunciation:
-        type === "english" ? pair.englishPronunciation : pair.pronunciation,
-      colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
-      animalIcon: showAnimalIcons
-        ? animalIcons[index % animalIcons.length]
-        : undefined,
-    };
-  };
-
-  const getFilteredNumberPairs = (
-    parentNumbers: number[],
-    numberOfCards: number
-  ) => {
-    return numberPairs
-      .filter((pair) => parentNumbers.includes(Number(pair.english)))
-      .slice(0, numberOfCards);
-  };
-
-  const createGameItems = (parentNumbers: number[], numberOfCards: number) => {
-    const filteredNumberPairs = getFilteredNumberPairs(
-      parentNumbers,
-      numberOfCards
+    resetGameState(
+      setCards,
+      setSelectedCards,
+      setMatches,
+      setScore,
+      setShowFeedback,
+      setIsCorrectMatch
     );
-    return filteredNumberPairs.flatMap((pair, index) => [
-      generateGameItems(pair, index, "english"),
-      generateGameItems(pair, index, "bengali"),
-    ]);
   };
 
   useEffect(() => {
-    const gameItems = createGameItems(parentNumbers, numberOfCards);
+    const gameItems = createGameItems(
+      parentNumbers,
+      numberOfCards,
+      showAnimalIcons
+    );
     setCards(shuffle(gameItems));
   }, [parentNumbers, showAnimalIcons, numberOfCards]);
 
@@ -160,8 +99,7 @@ export function GameBoard() {
       const secondCard = cards[second];
 
       const isMatch =
-        firstCard.id % parentNumbers.length ===
-          secondCard.id % parentNumbers.length &&
+        firstCard.content === secondCard.content &&
         firstCard.type !== secondCard.type;
 
       setIsCorrectMatch(isMatch);
@@ -186,7 +124,7 @@ export function GameBoard() {
 
       return () => clearTimeout(timer);
     }
-  }, [selectedCards, parentNumbers.length, cards]);
+  }, [selectedCards, cards]);
 
   const handleCardClick = (index: number) => {
     if (
