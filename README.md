@@ -1,8 +1,8 @@
-# Number Match Game
+# BanglaABC123
 
 ## Overview
 
-The Number Match Game is a fun and interactive educational game designed to help users learn numbers in both English and Bengali. The game features a matching mechanic where players must find pairs of cards that match in value. It utilizes React, TypeScript, and Tailwind CSS for a modern and responsive user interface.
+The BanglaABC123 is a fun and interactive educational game designed to help users learn numbers in both English and Bengali. The game features a matching mechanic where players must find pairs of cards that match in value. It utilizes React, TypeScript, and Tailwind CSS for a modern and responsive user interface.
 
 ## Features
 
@@ -22,7 +22,7 @@ The Number Match Game is a fun and interactive educational game designed to help
 
 ## Installation
 
-To get started with the Number Match Game, follow these steps:
+To get started with the BanglaABC123, follow these steps:
 
 1. Clone the repository:
    ```bash

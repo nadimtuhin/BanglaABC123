@@ -18,7 +18,7 @@ function App() {
     <div className="min-h-screen bg-blue-500">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-violet-800">Number Match Game</h1>
+          <h1 className="text-3xl font-bold text-violet-800">BanglaABC123</h1>
           <button
             onClick={() => setIsSettingsModalOpen(true)}
             className="p-3 rounded-full bg-violet-600 text-white hover:bg-violet-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
