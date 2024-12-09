@@ -18,25 +18,24 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
     setNumberOfCards,
   } = useStore();
 
-  const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const [start, end] = e.target.value.split("-").map(Number);
+  const handleRangeChange = (start: number, end: number) => {
     const numbers = Array.from(
       { length: end - start + 1 },
       (_, i) => start + i
     );
     setParentNumbers(numbers);
-    setSelectedRange(e.target.value);
+    setSelectedRange(`${start}-${end}`);
   };
 
   const ranges = Array.from({ length: 10 }, (_, i) => {
     const start = i * 10 + 1;
     const end = start + 9;
-    return { value: `${start}-${end}`, label: `${start}-${end}` };
+    return { start, end, label: `${start}-${end}` };
   });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg z-60 max-w-md w-full">
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg z-60 w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-center text-violet-800">Settings</h2>
         <div className="mb-6">
           <label className="flex items-center mb-2">
@@ -63,33 +62,33 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
         <div className="mb-6">
           <label className="flex items-center mb-2">
             <span className="mr-2 text-lg">Number of Cards:</span>
-            <select
-              value={numberOfCards}
-              onChange={(e) => setNumberOfCards(Number(e.target.value))}
-              className="border rounded p-2 text-lg"
-            >
+            <div className="flex flex-wrap space-x-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                <option key={num} value={num}>
+                <button
+                  key={num}
+                  onClick={() => setNumberOfCards(num)}
+                  className={`border rounded p-2 text-lg transition-colors duration-200 ${numberOfCards === num ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-100'}`}
+                >
                   {num}
-                </option>
+                </button>
               ))}
-            </select>
+            </div>
           </label>
         </div>
         <div className="mb-6">
           <label className="flex items-center mb-2">
             <span className="mr-2 text-lg">Select Range:</span>
-            <select
-              onChange={handleRangeChange}
-              value={selectedRange}
-              className="border rounded p-2 text-lg"
-            >
-              {ranges.map((range, i) => (
-                <option key={i} value={range.value}>
+            <div className="flex flex-wrap space-x-2">
+              {ranges.map((range) => (
+                <button
+                  key={range.label}
+                  onClick={() => handleRangeChange(range.start, range.end)}
+                  className={`border rounded p-2 text-lg transition-colors duration-200 ${selectedRange === `${range.start}-${range.end}` ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-100'}`}
+                >
                   {range.label}
-                </option>
+                </button>
               ))}
-            </select>
+            </div>
           </label>
         </div>
         <button
