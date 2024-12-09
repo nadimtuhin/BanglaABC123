@@ -3,67 +3,47 @@ import { Card } from "./Card";
 import { MatchFeedback } from "./MatchFeedback";
 import { shuffle } from "../utils/shuffle";
 import { createGameItems, resetGameState } from "../utils/gameUtils";
-import { SettingsPage } from "./SettingsPage";
 import { GameItem } from "../types";
-import { useLocalStorage } from "./useLocalStorage";
 import { ScoreStars } from "./ScoreStars";
 
-export function GameBoard() {
+interface GameBoardProps {
+  showAnimalIcons: boolean;
+  showColors: boolean;
+  parentNumbers: number[];
+  numberOfCards: number;
+}
+
+export function GameBoard({
+  showAnimalIcons,
+  showColors,
+  parentNumbers,
+  numberOfCards,
+}: GameBoardProps) {
   const [cards, setCards] = useState<GameItem[]>([]);
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [matches, setMatches] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
-  const [showAnimalIcons, setShowAnimalIcons] = useLocalStorage(
-    "showAnimalIcons",
-    true
-  );
-  const [showColors, setShowColors] = useLocalStorage("showColors", true);
-  const [parentNumbers, setParentNumbers] = useLocalStorage(
-    "parentNumbers",
-    Array.from({ length: 10 }, (_, i) => i + 1)
-  );
-  const [selectedRange, setSelectedRange] = useLocalStorage(
-    "selectedRange",
-    "1-10"
-  );
-  const [numberOfCards, setNumberOfCards] = useLocalStorage("numberOfCards", 5);
 
-  useEffect(() => {
+  function resetGame(
+    numberOfCards: number,
+    parentNumbers: number[],
+    showAnimalIcons: boolean
+  ) {
     setCards(
       shuffle(createGameItems(parentNumbers, numberOfCards, showAnimalIcons))
     );
+    setMatches(0);
+    setScore(0);
+    setShowFeedback(false);
+    setIsCorrectMatch(false);
+    setSelectedCards([]);
+  }
+
+  useEffect(() => {
+    resetGame(numberOfCards, parentNumbers, showAnimalIcons);
   }, [numberOfCards, parentNumbers, showAnimalIcons]);
-
-  const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const [start, end] = e.target.value.split("-").map(Number);
-    const numbers = Array.from(
-      { length: end - start + 1 },
-      (_, i) => start + i
-    );
-    setParentNumbers(numbers);
-    setSelectedRange(e.target.value);
-    resetGameState(
-      setCards,
-      setSelectedCards,
-      setMatches,
-      setScore,
-      setShowFeedback,
-      setIsCorrectMatch
-    );
-  };
-
-  const initializeCards = () => {
-    const gameItems = createGameItems(
-      parentNumbers,
-      numberOfCards,
-      showAnimalIcons
-    );
-    if (cards.length === 0 || gameItems.length !== cards.length) {
-      setCards(shuffle(gameItems));
-    }
-  };
 
   const handleCardClick = (index: number) => {
     if (
@@ -109,25 +89,10 @@ export function GameBoard() {
     }
   };
 
-  if (cards.length === 0) {
-    initializeCards();
-  }
-
   const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
-      <SettingsPage
-        showAnimalIcons={showAnimalIcons}
-        setShowAnimalIcons={setShowAnimalIcons}
-        showColors={showColors}
-        setShowColors={setShowColors}
-        selectedRange={selectedRange}
-        setSelectedRange={setSelectedRange}
-        handleRangeChange={handleRangeChange}
-        numberOfCards={numberOfCards}
-        setNumberOfCards={setNumberOfCards}
-      />
       <div className="text-center mb-8">
         <p>Selected Numbers: {parentNumbers.join(", ")}</p>
         <p className="text-gray-600 text-lg mb-4">
@@ -135,15 +100,7 @@ export function GameBoard() {
         </p>
         <button
           onClick={() => {
-            resetGameState(
-              setCards,
-              setSelectedCards,
-              setMatches,
-              setScore,
-              setShowFeedback,
-              setIsCorrectMatch
-            );
-            initializeCards();
+            resetGame(numberOfCards, parentNumbers, showAnimalIcons);
           }}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg"
         >

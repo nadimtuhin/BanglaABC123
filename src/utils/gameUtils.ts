@@ -87,19 +87,3 @@ export const createGameItems = (
     generateGameItems(pair, index, "bengali", numberOfCards, showAnimalIcons),
   ]);
 };
-
-export const resetGameState = (
-  setCards: React.Dispatch<React.SetStateAction<GameItem[]>>,
-  setSelectedCards: React.Dispatch<React.SetStateAction<number[]>>,
-  setMatches: React.Dispatch<React.SetStateAction<number>>,
-  setScore: React.Dispatch<React.SetStateAction<number>>,
-  setShowFeedback: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsCorrectMatch: React.Dispatch<React.SetStateAction<boolean>>
-) => {
-  setCards([]);
-  setSelectedCards([]);
-  setMatches(0);
-  setScore(0);
-  setShowFeedback(false);
-  setIsCorrectMatch(false);
-};
