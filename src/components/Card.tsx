@@ -3,13 +3,13 @@ import { Volume2 } from "lucide-react";
 
 // Define a more comprehensive color palette
 const COLOR_PALETTE = {
-  indigo: { bg: 'bg-indigo-500', text: 'text-indigo-600', hover: 'hover:bg-indigo-100' },
-  blue: { bg: 'bg-blue-500', text: 'text-blue-600', hover: 'hover:bg-blue-100' },
-  green: { bg: 'bg-green-500', text: 'text-green-600', hover: 'hover:bg-green-100' },
-  red: { bg: 'bg-red-500', text: 'text-red-600', hover: 'hover:bg-red-100' },
-  purple: { bg: 'bg-purple-500', text: 'text-purple-600', hover: 'hover:bg-purple-100' },
-  teal: { bg: 'bg-teal-500', text: 'text-teal-600', hover: 'hover:bg-teal-100' },
-  default: { bg: 'bg-gray-500', text: 'text-gray-600', hover: 'hover:bg-gray-100' }
+  indigo: { bg: 'bg-indigo-600', text: 'text-white', hover: 'hover:bg-indigo-700' },
+  blue: { bg: 'bg-blue-600', text: 'text-white', hover: 'hover:bg-blue-700' },
+  green: { bg: 'bg-green-600', text: 'text-white', hover: 'hover:bg-green-700' },
+  red: { bg: 'bg-red-600', text: 'text-white', hover: 'hover:bg-red-700' },
+  purple: { bg: 'bg-purple-600', text: 'text-white', hover: 'hover:bg-purple-700' },
+  teal: { bg: 'bg-teal-600', text: 'text-white', hover: 'hover:bg-teal-700' },
+  default: { bg: 'bg-gray-600', text: 'text-white', hover: 'hover:bg-gray-700' }
 };
 
 interface CardProps {

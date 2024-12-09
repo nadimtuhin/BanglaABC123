@@ -6,7 +6,6 @@ import { shuffle } from "../utils/shuffle";
 import { Dog, Cat, Rabbit, Snail, Rat, Fish, Bird } from "lucide-react";
 import { SettingsPage } from "./SettingsPage";
 
-// Enhanced color palette with complementary colors
 const COLOR_THEMES = [
   { primary: "indigo", secondary: "pink", accent: "purple" },
   { primary: "teal", secondary: "orange", accent: "green" },
@@ -61,28 +60,6 @@ const useLocalStorage = <T,>(
   return [storedValue, setValue];
 };
 
-  const generateGameItems = (
-    pair: NumberPair,
-    index: number,
-    type: "english" | "bengali",
-    numberOfCards: number,
-    showAnimalIcons: boolean
-  ) => {
-    const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
-    return {
-      id: type === "english" ? index : index + numberOfCards,
-      content: type === "english" ? pair.english : pair.bengali,
-      type,
-      isMatched: false,
-      pronunciation:
-        type === "english" ? pair.englishPronunciation : pair.pronunciation,
-      colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
-      animalIcon: showAnimalIcons
-        ? animalIcons[index % animalIcons.length]
-        : undefined,
-    };
-  };
-
 export function GameBoard() {
   const [cards, setCards] = useState<GameItem[]>([]);
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
@@ -112,14 +89,17 @@ export function GameBoard() {
   );
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRange(e.target.value);
     const [start, end] = e.target.value.split("-").map(Number);
     const numbers = Array.from(
       { length: end - start + 1 },
       (_, i) => start + i
     );
     setParentNumbers(numbers);
-    // Reset game state when range changes
+    setSelectedRange(e.target.value);
+    resetGameState();
+  };
+
+  const resetGameState = () => {
     setCards([]);
     setSelectedCards([]);
     setMatches(0);
@@ -128,28 +108,48 @@ export function GameBoard() {
     setIsCorrectMatch(false);
   };
 
+  const generateGameItems = (
+    pair: NumberPair,
+    index: number,
+    type: "english" | "bengali"
+  ) => {
+    const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
+    return {
+      id: type === "english" ? index : index + numberOfCards,
+      content: type === "english" ? pair.english : pair.bengali,
+      type,
+      isMatched: false,
+      pronunciation:
+        type === "english" ? pair.englishPronunciation : pair.pronunciation,
+      colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
+      animalIcon: showAnimalIcons
+        ? animalIcons[index % animalIcons.length]
+        : undefined,
+    };
+  };
 
-
-  const getFilteredNumberPairs = (parentNumbers: number[], numberOfCards: number) => {
+  const getFilteredNumberPairs = (
+    parentNumbers: number[],
+    numberOfCards: number
+  ) => {
     return numberPairs
       .filter((pair) => parentNumbers.includes(Number(pair.english)))
       .slice(0, numberOfCards);
   };
 
-  const createGameItems = (
-    parentNumbers: number[],
-    numberOfCards: number,
-    showAnimalIcons: boolean
-  ) => {
-    const filteredNumberPairs = getFilteredNumberPairs(parentNumbers, numberOfCards);
+  const createGameItems = (parentNumbers: number[], numberOfCards: number) => {
+    const filteredNumberPairs = getFilteredNumberPairs(
+      parentNumbers,
+      numberOfCards
+    );
     return filteredNumberPairs.flatMap((pair, index) => [
-      generateGameItems(pair, index, "english", numberOfCards, showAnimalIcons),
-      generateGameItems(pair, index, "bengali", numberOfCards, showAnimalIcons),
+      generateGameItems(pair, index, "english"),
+      generateGameItems(pair, index, "bengali"),
     ]);
   };
 
   useEffect(() => {
-    const gameItems = createGameItems(parentNumbers, numberOfCards, showAnimalIcons);
+    const gameItems = createGameItems(parentNumbers, numberOfCards);
     setCards(shuffle(gameItems));
   }, [parentNumbers, showAnimalIcons, numberOfCards]);
 
@@ -189,11 +189,13 @@ export function GameBoard() {
   }, [selectedCards, parentNumbers.length, cards]);
 
   const handleCardClick = (index: number) => {
-    if (selectedCards.length >= 2) return;
-    if (selectedCards.includes(index)) return;
-    if (cards[index].isMatched) return;
-
-    setSelectedCards((prev) => [...prev, index]);
+    if (
+      selectedCards.length < 2 &&
+      !selectedCards.includes(index) &&
+      !cards[index].isMatched
+    ) {
+      setSelectedCards((prev) => [...prev, index]);
+    }
   };
 
   return (
@@ -237,16 +239,7 @@ export function GameBoard() {
             onClick={() => handleCardClick(index)}
             pronunciation={card.pronunciation}
             type={card.type}
-            color={
-              showColors
-                ? (card.colorTheme.primary as
-                    | "indigo"
-                    | "purple"
-                    | "teal"
-                    | "green"
-                    | "blue")
-                : "default"
-            }
+            color={showColors ? card.colorTheme.primary : "default"}
             animalIcon={showAnimalIcons ? card.animalIcon : undefined}
           />
         ))}
