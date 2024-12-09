@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "./Card";
 import { MatchFeedback } from "./MatchFeedback";
 import { shuffle } from "../utils/shuffle";
@@ -15,26 +15,26 @@ export function GameBoard() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrectMatch, setIsCorrectMatch] = useState(false);
   const [score, setScore] = useState(0);
-  const [showAnimalIcons, setShowAnimalIcons] = useLocalStorage<boolean>(
+  const [showAnimalIcons, setShowAnimalIcons] = useLocalStorage(
     "showAnimalIcons",
     true
   );
-  const [showColors, setShowColors] = useLocalStorage<boolean>(
-    "showColors",
-    true
-  );
-  const [parentNumbers, setParentNumbers] = useLocalStorage<number[]>(
+  const [showColors, setShowColors] = useLocalStorage("showColors", true);
+  const [parentNumbers, setParentNumbers] = useLocalStorage(
     "parentNumbers",
     Array.from({ length: 10 }, (_, i) => i + 1)
   );
-  const [selectedRange, setSelectedRange] = useLocalStorage<string>(
+  const [selectedRange, setSelectedRange] = useLocalStorage(
     "selectedRange",
     "1-10"
   );
-  const [numberOfCards, setNumberOfCards] = useLocalStorage<number>(
-    "numberOfCards",
-    5
-  );
+  const [numberOfCards, setNumberOfCards] = useLocalStorage("numberOfCards", 5);
+
+  useEffect(() => {
+    setCards(
+      shuffle(createGameItems(parentNumbers, numberOfCards, showAnimalIcons))
+    );
+  }, [numberOfCards, parentNumbers, showAnimalIcons]);
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [start, end] = e.target.value.split("-").map(Number);
@@ -79,17 +79,25 @@ export function GameBoard() {
         const firstCard = cards[first];
         const secondCard = cards[second];
 
-        const isMatch = firstCard?.value === secondCard?.value;
+        const isMatch = firstCard.value === secondCard.value;
 
         setIsCorrectMatch(isMatch);
         setShowFeedback(true);
 
         if (isMatch) {
-          const updatedCards = cards.map((card, idx) =>
-            idx === first || idx === second ? { ...card, isMatched: true } : card
-          );
+          // Create a new array of cards with updated match status
+          const updatedCards = cards.map((card, index) => {
+            // Check if the current card is one of the matched cards
+            const isMatchedCard = index === first || index === second;
+            // Return a new card object with isMatched set to true if it's a matched card
+            return isMatchedCard ? { ...card, isMatched: true } : card;
+          });
+
+          // Update the state with the new cards
           setCards(updatedCards);
-          setMatches((m) => m + 1);
+          // Increment the match count
+          setMatches((prevMatches) => prevMatches + 1);
+          // Increment the score
           setScore((prevScore) => prevScore + 1);
         }
 
@@ -101,12 +109,10 @@ export function GameBoard() {
     }
   };
 
-  // Initialize cards on first render
   if (cards.length === 0) {
     initializeCards();
   }
 
-  // get scoreInFiveStars from score and numberOfCards
   const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
 
   return (
