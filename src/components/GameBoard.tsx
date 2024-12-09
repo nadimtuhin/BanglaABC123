@@ -64,16 +64,21 @@ export function GameBoard() {
 
   useEffect(() => {
     if (selectedCards.length === 2) {
+      console.log("selectedCards", selectedCards);
       const [first, second] = selectedCards;
       const firstCard = cards[first];
       const secondCard = cards[second];
+      console.log("firstCard", firstCard);
+      console.log("secondCard", secondCard);
 
-      const isMatch =
-        firstCard.content === secondCard.content &&
-        firstCard.type !== secondCard.type;
+      const isMatch = firstCard.value === secondCard.value;
+
+      console.log("isMatch", isMatch);
 
       setIsCorrectMatch(isMatch);
       setShowFeedback(true);
+
+      console.log("cards", cards);
 
       if (isMatch) {
         setCards((prevCards) =>

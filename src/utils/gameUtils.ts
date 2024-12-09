@@ -1,6 +1,18 @@
 import { NumberPair } from "../data/numbers";
 
-import { Bird, Dog, Fish, Rabbit, Rat, Snail } from "lucide-react";
+import {
+  Bird,
+  Bug,
+  Dog,
+  Fish,
+  Mouse,
+  Rabbit,
+  Rat,
+  Shell,
+  Snail,
+  Squirrel,
+  Turtle,
+} from "lucide-react";
 
 import { Cat } from "lucide-react";
 import { numberPairs } from "../data/numbers";
@@ -14,6 +26,22 @@ const COLOR_THEMES = [
   { primary: "indigo", secondary: "amber", accent: "green" },
 ];
 
+const ANIMAL_ICONS = [
+  Dog,
+  Cat,
+  Fish,
+  Bird,
+  Rat,
+  Rabbit,
+  Snail,
+  Rabbit,
+  Shell,
+  Squirrel,
+  Bug,
+  Mouse,
+  Turtle,
+];
+
 export const generateGameItems = (
   pair: NumberPair,
   index: number,
@@ -21,17 +49,17 @@ export const generateGameItems = (
   numberOfCards: number,
   showAnimalIcons: boolean
 ) => {
-  const animalIcons = [Dog, Cat, Fish, Bird, Rat, Rabbit, Snail];
   return {
     id: type === "english" ? index : index + numberOfCards,
     content: type === "english" ? pair.english : pair.bengali,
+    value: pair.english,
     type,
     isMatched: false,
     pronunciation:
       type === "english" ? pair.englishPronunciation : pair.pronunciation,
     colorTheme: COLOR_THEMES[index % COLOR_THEMES.length],
     animalIcon: showAnimalIcons
-      ? animalIcons[index % animalIcons.length]
+      ? ANIMAL_ICONS[index % ANIMAL_ICONS.length]
       : undefined,
   };
 };
