@@ -5,6 +5,7 @@
     import { numberPairs } from "../data/numbers";
     import { shuffle } from "../utils/shuffle";
     import { Dog, Cat, Rabbit, Snail, Rat, Fish, Bird } from 'lucide-react';
+    import { SettingsPage } from './SettingsPage';
     
     // Enhanced color palette with complementary colors
     const COLOR_THEMES = [
@@ -114,6 +115,12 @@
     
       return (
         <div className="w-full max-w-4xl mx-auto p-4">
+          <SettingsPage
+            showAnimalIcons={showAnimalIcons}
+            setShowAnimalIcons={setShowAnimalIcons}
+            showColors={showColors}
+            setShowColors={setShowColors}
+          />
           <div className="text-center mb-8">
             <h1 className={`
               text-4xl font-bold text-transparent bg-clip-text 
@@ -125,28 +132,6 @@
               Match Bengali Numbers
               {showAnimalIcons && <Cat className={`w-8 h-8 ml-2 text-${showColors ? cards[0]?.colorTheme.accent : 'gray'}-600`} />}
             </h1>
-            <div className="mb-4">
-              <label className="flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  checked={showAnimalIcons}
-                  onChange={handleCheckboxChange}
-                  className="mr-2"
-                />
-                Show Animal Icons
-              </label>
-            </div>
-            <div className="mb-4">
-              <label className="flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  checked={showColors}
-                  onChange={handleColorsCheckboxChange}
-                  className="mr-2"
-                />
-                Show Colors
-              </label>
-            </div>
             <p className="text-gray-700 text-lg mb-4">
               Match the English numbers with their Bengali counterparts
             </p>
