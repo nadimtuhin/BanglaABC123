@@ -1,89 +1,108 @@
 import React from "react";
+import { useLocalStorage } from "./useLocalStorage";
 
 interface SettingsPageProps {
-  showAnimalIcons: boolean;
-  setShowAnimalIcons: (value: boolean) => void;
-  showColors: boolean;
-  setShowColors: (value: boolean) => void;
-  selectedRange: string;
-  setSelectedRange: (value: string) => void;
-  handleRangeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  numberOfCards: number;
-  setNumberOfCards: (value: number) => void;
+  onClose: () => void;
 }
 
-const ranges = Array.from({ length: 10 }, (_, i) => {
-  const start = i * 10 + 1;
-  const end = start + 9;
-  return { value: `${start}-${end}`, label: `${start}-${end}` };
-});
+export function SettingsPage({ onClose }: SettingsPageProps) {
+  const [showAnimalIcons, setShowAnimalIcons] = useLocalStorage(
+    "showAnimalIcons",
+    true
+  );
+  const [showColors, setShowColors] = useLocalStorage("showColors", true);
+  const [parentNumbers, setParentNumbers] = useLocalStorage(
+    "parentNumbers",
+    Array.from({ length: 10 }, (_, i) => i + 1)
+  );
+  const [selectedRange, setSelectedRange] = useLocalStorage(
+    "selectedRange",
+    "1-10"
+  );
+  const [numberOfCards, setNumberOfCards] = useLocalStorage("numberOfCards", 5);
 
-export function SettingsPage({
-  showAnimalIcons,
-  setShowAnimalIcons,
-  showColors,
-  setShowColors,
-  selectedRange,
-  handleRangeChange,
-  numberOfCards,
-  setNumberOfCards,
-}: SettingsPageProps) {
+  const handleRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const [start, end] = e.target.value.split("-").map(Number);
+    const numbers = Array.from(
+      { length: end - start + 1 },
+      (_, i) => start + i
+    );
+    setParentNumbers(numbers);
+    setSelectedRange(e.target.value);
+  };
+
+  const ranges = Array.from({ length: 10 }, (_, i) => {
+    const start = i * 10 + 1;
+    const end = start + 9;
+    return { value: `${start}-${end}`, label: `${start}-${end}` };
+  });
+
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
-      <div className="mb-4">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={showAnimalIcons}
-            onChange={(e) => setShowAnimalIcons(e.target.checked)}
-            className="mr-2"
-          />
-          Show Animal Icons
-        </label>
-      </div>
-      <div className="mb-4">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={showColors}
-            onChange={(e) => setShowColors(e.target.checked)}
-            className="mr-2"
-          />
-          Show Colors
-        </label>
-      </div>
-      <div className="mb-4">
-        <label className="flex items-center">
-          <span className="mr-2">Number of Cards:</span>
-          <select
-            value={numberOfCards}
-            onChange={(e) => setNumberOfCards(Number(e.target.value))}
-            className="border rounded p-1"
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-              <option key={num} value={num}>
-                {num}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div className="mb-4">
-        <label className="flex items-center">
-          <span className="mr-2">Select Range:</span>
-          <select
-            onChange={handleRangeChange}
-            value={selectedRange}
-            className="border rounded p-1"
-          >
-            {ranges.map((range, i) => (
-              <option key={i} value={range.value}>
-                {range.label}
-              </option>
-            ))}
-          </select>
-        </label>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg z-60">
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-4">Settings</h2>
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={showAnimalIcons}
+                onChange={(e) => setShowAnimalIcons(e.target.checked)}
+                className="mr-2"
+              />
+              Show Animal Icons
+            </label>
+          </div>
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={showColors}
+                onChange={(e) => setShowColors(e.target.checked)}
+                className="mr-2"
+              />
+              Show Colors
+            </label>
+          </div>
+          <div className="mb-4">
+            <label className="flex items-center">
+              <span className="mr-2">Number of Cards:</span>
+              <select
+                value={numberOfCards}
+                onChange={(e) => setNumberOfCards(Number(e.target.value))}
+                className="border rounded p-1"
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="mb-4">
+            <label className="flex items-center">
+              <span className="mr-2">Select Range:</span>
+              <select
+                onChange={handleRangeChange}
+                value={selectedRange}
+                className="border rounded p-1"
+              >
+                {ranges.map((range, i) => (
+                  <option key={i} value={range.value}>
+                    {range.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </div>
+        <button
+          onClick={onClose}
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+        >
+          Close
+        </button>
       </div>
     </div>
   );

@@ -5,20 +5,17 @@ import { shuffle } from "../utils/shuffle";
 import { createGameItems } from "../utils/gameUtils";
 import { GameItem } from "../types";
 import { ScoreStars } from "./ScoreStars";
+import { useLocalStorage } from "./useLocalStorage";
 
-interface GameBoardProps {
-  showAnimalIcons: boolean;
-  showColors: boolean;
-  parentNumbers: number[];
-  numberOfCards: number;
-}
+export function GameBoard() {
+  const [showAnimalIcons] = useLocalStorage("showAnimalIcons", true);
+  const [showColors] = useLocalStorage("showColors", true);
+  const [parentNumbers] = useLocalStorage(
+    "parentNumbers",
+    Array.from({ length: 10 }, (_, i) => i + 1)
+  );
+  const [numberOfCards] = useLocalStorage("numberOfCards", 5);
 
-export function GameBoard({
-  showAnimalIcons,
-  showColors,
-  parentNumbers,
-  numberOfCards,
-}: GameBoardProps) {
   const [cards, setCards] = useState<GameItem[]>([]);
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [matches, setMatches] = useState(0);
