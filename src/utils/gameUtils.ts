@@ -48,7 +48,7 @@ export const generateGameItems = (
   type: "english" | "bengali",
   numberOfCards: number,
   showAnimalIcons: boolean
-) => {
+): GameItem => {
   return {
     id: type === "english" ? index : index + numberOfCards,
     content: type === "english" ? pair.english : pair.bengali,

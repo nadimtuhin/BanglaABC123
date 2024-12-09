@@ -1,7 +1,6 @@
 export interface NumberPair {
   english: string;
   bengali: string;
-  value?: string;
   pronunciation: string;
   englishPronunciation: string;
 }

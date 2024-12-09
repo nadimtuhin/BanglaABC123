@@ -106,6 +106,9 @@ export function GameBoard() {
     initializeCards();
   }
 
+  // get scoreInFiveStars from score and numberOfCards
+  const scoreInFiveStars = Math.round(score / (numberOfCards / 5));
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <SettingsPage
@@ -122,8 +125,24 @@ export function GameBoard() {
       <div className="text-center mb-8">
         <p>Selected Numbers: {parentNumbers.join(", ")}</p>
         <p className="text-gray-600 text-lg mb-4">
-          Score: <ScoreStars score={score} />
+          Score: <ScoreStars score={scoreInFiveStars} />
         </p>
+        <button
+          onClick={() => {
+            resetGameState(
+              setCards,
+              setSelectedCards,
+              setMatches,
+              setScore,
+              setShowFeedback,
+              setIsCorrectMatch
+            );
+            initializeCards();
+          }}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg"
+        >
+          Restart Game
+        </button>
         {matches === parentNumbers.length && (
           <div className="mt-6 text-2xl font-bold">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-500">
